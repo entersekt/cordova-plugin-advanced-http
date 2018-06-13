@@ -13,6 +13,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import java.nio.ByteBuffer;
+import java.io.ByteArrayInputStream;
 
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;

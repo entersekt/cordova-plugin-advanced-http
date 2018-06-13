@@ -141,6 +141,20 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)addPinningCerts:(CDVInvokedUrlCommand*)command {
+    NSArray *certificates = [command.arguments objectAtIndex:0];
+    NSMutableSet <NSData *> *pinnedCertificates = [NSMutableSet setWithSet:[securityPolicy pinnedCertificates]];
+
+    for (NSString *base64Certificate in certificates) {
+        NSData *certificateData = [[NSData alloc] initWithBase64EncodedString:base64Certificate options:0];
+        [pinnedCertificates addObject:certificateData];
+    }
+    [securityPolicy setPinnedCertificates:[pinnedCertificates copy]];
+
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void)setTimeout:(NSTimeInterval)timeout forManager:(AFHTTPSessionManager*)manager {
     [manager.requestSerializer setTimeoutInterval:timeout];
 }

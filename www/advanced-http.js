@@ -66,6 +66,9 @@ var publicInterface = {
   setRequestTimeout: function (timeout) {
     globalConfigs.timeout = timeout;
   },
+  addPinningCerts: function(certs, success, failure) {
+    return exec(success, failure, "CordovaHttpPlugin", "addPinningCerts", [certs]);
+},
   setSSLCertMode: function (mode, success, failure) {
     return exec(success, failure, 'CordovaHttpPlugin', 'setSSLCertMode', [ helpers.checkSSLCertMode(mode) ]);
   },

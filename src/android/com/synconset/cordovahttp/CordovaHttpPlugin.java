@@ -4,12 +4,14 @@
 package com.synconset.cordovahttp;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.security.GeneralSecurityException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -21,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.res.AssetManager;
+import android.util.Base64;
 
 import com.github.kevinsawicki.http.HttpRequest;
 
@@ -105,6 +108,15 @@ public class CordovaHttpPlugin extends CordovaPlugin {
                     callbackContext.error("There was an error setting up ssl pinning");
                 }
             }
+        } else if (action.equals("addPinningCerts")) {
+            try {
+                List<String> certs = this.getStringListFromJSONArray(args);
+                this.addPinningCerts(certs);
+                callbackContext.success();
+            } catch(Exception e) {
+                e.printStackTrace();
+                callbackContext.error("There was an error adding pinning certs");
+            }
         } else if (action.equals("uploadFile")) {
             String urlString = args.getString(0);
             Object params = args.get(1);
@@ -132,6 +144,23 @@ public class CordovaHttpPlugin extends CordovaPlugin {
             return false;
         }
         return true;
+    }
+
+    private void addPinningCerts(List<String> certs) throws GeneralSecurityException, IOException {
+        for (String cert : certs) {
+            byte[] certBytes = Base64.decode(cert, Base64.NO_WRAP);
+            InputStream caInput = new ByteArrayInputStream(certBytes);
+            HttpRequest.addCert(caInput);
+        }
+    }
+
+    private List<String> getStringListFromJSONArray(JSONArray array) throws JSONException {
+        List<String> list = new ArrayList<String>();
+
+        for (int i = 0; i < array.length(); i++) {
+            list.add(array.getString(i));
+        }
+        return list;
     }
 
     private void loadSSLCerts() throws GeneralSecurityException, IOException {

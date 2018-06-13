@@ -165,6 +165,21 @@ cordova.plugin.http.setSSLCertMode('nocheck', function() {
 ### enableSSLPinning (obsolete)
 This function was removed in 2.0.0. Use ["setSSLCertMode"](#setSSLCertMode) to enable SSL pinning (mode "pinned").
 
+### addPinningCerts
+Add additional certificates to pin against at runtime.
+
+If you have a secure channel to distribute certificates, you can update certificates at runtime. This allows you to rotate expired certificates without having to force users to update their app.
+
+After SSL pinning has been enabled you can add Base64 DER encoded certificates.
+
+```js
+    cordova.plugin.http.addPinningCerts(['MIIEyzCCA7OgAwIBA...', 'MIIFHzCCBAegAwIBA...'], function() {
+        console.log('success!');
+    }, function() {
+        console.log('error :(');
+    });
+```
+
 ### acceptAllCerts (obsolete)
 This function was removed in 2.0.0. Use ["setSSLCertMode"](#setSSLCertMode) to disable checking certs (mode "nocheck").
 
